@@ -1,0 +1,60 @@
+struct Position
+{
+    public int row;
+    public int cow;
+    public Position (int row, int cow)
+    {
+        row = row;
+        cow = cow; 
+    }
+
+    static void Main(string[] args)
+    {
+        Position[] directions = new Position[]
+        {
+            new Position (0, 1),
+            new Position (0, -1),
+            new Position (1, 0),
+            new Position (-1, 0),
+        };
+        int diections = 0;
+
+        Queue<Position> snakeElements = new Queue<Position>();
+        for (int i = 0; i <= 5; i++)
+        {
+            snakeElements.Enqueue(new Position(0, i));
+        }
+        while (true)
+        {
+            ConsoleKeyInfo userInput = Console.ReadKey();
+            if (userInput.Key == ConsoleKey.LeftArrow)
+            {
+                directions = 1;
+            }
+            if (userInput.Key == ConsoleKey.RightArrow)
+            {
+                directions = 0;
+            }
+            if (userInput.Key == ConsoleKey.UpArrow)
+            {
+                directions = 3;
+            }
+            if (userInput.Key == ConsoleKey.DownArrow)
+            {
+                directions = 2;
+            }
+            foreach (Position position in snakeElements)
+            {
+                Console.SetCursorPosition(position.row, position.cow);
+                Console.WriteLine("*");
+            }
+
+        }
+    }
+}
+      
+  
+    
+    
+
+    
