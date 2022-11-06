@@ -1,11 +1,11 @@
 struct Position
 {
     public int row;
-    public int cow;
-    public Position (int row, int cow)
+    public int col;
+    public Position (int row, int col)
     {
         row = row;
-        cow = cow; 
+        col = col; 
     }
 
     static void Main(string[] args)
@@ -17,7 +17,12 @@ struct Position
             new Position (1, 0),
             new Position (-1, 0),
         };
-        int diections = 0;
+        int direction = 0;
+
+        Random rand = new Random ();
+        Position food = new Position(rand.Next (0, Console.WindowHeight), rand.Next (0, Console.WindowWidth));
+        
+        Console.BufferHeight = Console.WindowHeight;
 
         Queue<Position> snakeElements = new Queue<Position>();
         for (int i = 0; i <= 5; i++)
@@ -26,35 +31,54 @@ struct Position
         }
         while (true)
         {
-            ConsoleKeyInfo userInput = Console.ReadKey();
-            if (userInput.Key == ConsoleKey.LeftArrow)
+            if (Console.KeyAvailable)
             {
-                directions = 1;
+                ConsoleKeyInfo userInput = Console.ReadKey();
+                if (userInput.Key == ConsoleKey.LeftArrow)
+                {
+                    direction = 1;
+                }
+                if (userInput.Key == ConsoleKey.RightArrow)
+                {
+                    direction = 0;
+                }
+                if (userInput.Key == ConsoleKey.UpArrow)
+                {
+                    direction = 3;
+                }
+                if (userInput.Key == ConsoleKey.DownArrow)
+                {
+                    direction = 2;
+                }
             }
-            if (userInput.Key == ConsoleKey.RightArrow)
+
+            Position snakeHaed = snakeElements.Last();
+            Position nexDirection = directions[direction];
+            Position snakeNewHead = new Position(snakeHaed.row + nexDirection.row, snakeHaed.col + nexDirection.col);
+            snakeElements.Enqueue(snakeNewHead);
+
+            if (snakeNewHead.col == food.col && snakeNewHead.row == food.row)
             {
-                directions = 0;
+                food = new Position(rand.Next(0, Console.WindowHeight), rand.Next(0, Console.WindowWidth));
+
             }
-            if (userInput.Key == ConsoleKey.UpArrow)
+            else
             {
-                directions = 3;
+                snakeElements.Dequeue();
             }
-            if (userInput.Key == ConsoleKey.DownArrow)
-            {
-                directions = 2;
-            }
+
+            Console.Clear();
+
             foreach (Position position in snakeElements)
             {
-                Console.SetCursorPosition(position.row, position.cow);
+                Console.SetCursorPosition(position.row, position.col);
                 Console.WriteLine("*");
             }
 
+            Console.SetCursorPosition(food.col, food.row);
+            Console.WriteLine("@");
+
+            Thread.Sleep(100);
         }
     }
 }
-      
-  
-    
-    
-
-    
