@@ -10,6 +10,11 @@ struct Position
 
     static void Main(string[] args)
     {
+        int right = 0;
+        int left = 1;
+        int down = 2;
+        int up = 3;
+
         Position[] directions = new Position[]
         {
             new Position (0, 1),
@@ -17,7 +22,10 @@ struct Position
             new Position (1, 0),
             new Position (-1, 0),
         };
-        int direction = 0;
+
+        int sleepTime=100;
+
+        int direction = right;
 
         Random rand = new Random ();
         Position food = new Position(rand.Next (0, Console.WindowHeight), rand.Next (0, Console.WindowWidth));
@@ -36,31 +44,60 @@ struct Position
                 ConsoleKeyInfo userInput = Console.ReadKey();
                 if (userInput.Key == ConsoleKey.LeftArrow)
                 {
-                    direction = 1;
+                    if (direction != right)
+                    {
+                        direction = left;
+                    }   
                 }
                 if (userInput.Key == ConsoleKey.RightArrow)
                 {
-                    direction = 0;
+                    if (direction != right)
+                    {
+                        direction = right;
+                    }
+                    
                 }
                 if (userInput.Key == ConsoleKey.UpArrow)
                 {
-                    direction = 3;
+                    if (direction != down)
+                    {
+                        direction = up;
+                    }
+                    
                 }
                 if (userInput.Key == ConsoleKey.DownArrow)
                 {
-                    direction = 2;
+                    if (direction != up)
+                    {
+                        direction = down;
+                    }
+                    
                 }
             }
 
             Position snakeHaed = snakeElements.Last();
             Position nexDirection = directions[direction];
             Position snakeNewHead = new Position(snakeHaed.row + nexDirection.row, snakeHaed.col + nexDirection.col);
+
+            if (snakeNewHead.row < 0 || snakeNewHead.col < 0 || snakeNewHead.row >= Console.WindowHeight || snakeNewHead.col >= Console.WindowHeight || snakeElements.Contains(snakeNewHead))
+            {
+                Console.SetCursorPosition(0, 0);
+                Console.WriteLine("CAME OVER!");
+                Console.WriteLine("Your points are:{0}",(snakeElements.Count*100) );
+                return;
+            }
             snakeElements.Enqueue(snakeNewHead);
 
             if (snakeNewHead.col == food.col && snakeNewHead.row == food.row)
             {
-                food = new Position(rand.Next(0, Console.WindowHeight), rand.Next(0, Console.WindowWidth));
+                do
+                {
+                    food = new Position(rand.Next(0, Console.WindowHeight), rand.Next(0, Console.WindowWidth));
+                } while (snakeElements.Contains(food));
 
+                Console.SetCursorPosition(food.row, food.col);
+                Console.WriteLine("@");
+                sleepTime--;
             }
             else
             {
@@ -78,7 +115,7 @@ struct Position
             Console.SetCursorPosition(food.col, food.row);
             Console.WriteLine("@");
 
-            Thread.Sleep(100);
+            Thread.Sleep(sleepTime);
         }
     }
 }
